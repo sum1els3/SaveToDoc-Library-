@@ -7,7 +7,7 @@ namespace SaveToDoc
 {
     public class PrintReportCard
     {
-        public static void PrintJHSGrades(object file_name, object new_file_name, List<string> tags, List<object> to_replace)
+        public static void GenerateReportCard(object file_name, object new_file_name, List<ReplaceTag> tags)
         {
             object missing = Missing.Value;
             string fileLocation = string.Format("{0}\\SampleForms\\{1}", AppDomain.CurrentDomain.BaseDirectory, file_name);
@@ -39,9 +39,9 @@ namespace SaveToDoc
 
             wordDoc.Activate();
 
-            for (int i = 0; i < tags.Count; i++)
+            foreach (ReplaceTag replaceTag in tags)
             {
-                FindAndReplace(wordApp, tags[i], to_replace[i]);
+                FindAndReplace(wordApp, replaceTag.Replace, replaceTag.Value);
             }
 
             wordDoc.SaveAs2(
@@ -107,5 +107,17 @@ namespace SaveToDoc
                 ref _matchcontrol
             );
         }
+    }
+
+    public class ReplaceTag
+    {
+        public ReplaceTag(string replace, object value)
+        {
+            Replace = replace;
+            Value = value;
+        }
+
+        public string Replace { get; set; }
+        public object Value { get; set; }
     }
 }
