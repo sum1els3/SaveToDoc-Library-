@@ -7,6 +7,12 @@ namespace SaveToDoc
 {
     public class PrintReportCard
     {
+        /// <summary>
+        /// Generates a word document from a given template
+        /// </summary>
+        /// <param name="file_name"></param>
+        /// <param name="new_file_name"></param>
+        /// <param name="tags"></param>
         public static void GenerateReportCard(object file_name, object new_file_name, List<ReplaceTag> tags)
         {
             object missing = Missing.Value;
@@ -108,6 +114,12 @@ namespace SaveToDoc
             );
         }
 
+        /// <summary>
+        /// Merges multiple documents into one
+        /// </summary>
+        /// <param name="studentNames"></param>
+        /// <param name="grading"></param>
+        /// <param name="new_file_name"></param>
         public static void MergeFiles(List<string> studentNames, int grading, object new_file_name)
         {
             object missing = Missing.Value;
