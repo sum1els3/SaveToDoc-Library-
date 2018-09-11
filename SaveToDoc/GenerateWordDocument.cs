@@ -10,13 +10,13 @@ namespace SaveToDoc
         /// <summary>
         /// Generates a word doc from a given tamplate and replaces the tags with it's given value
         /// </summary>
-        /// <param name="template"></param>
-        /// <param name="newFileName"></param>
+        /// <param name="templateLocation"></param>
+        /// <param name="newFileNameWithLocation"></param>
         /// <param name="tags"></param>
-        public static void GenerateWordDoc(object template, object newFileName, List<ReplaceTag> tags)
+        public static void GenerateWordDoc(object templateLocation, object newFileNameWithLocation, List<ReplaceTag> tags)
         {
             object missing = Missing.Value;
-            string fileLocation = string.Format("{0}\\SampleForms\\{1}", AppDomain.CurrentDomain.BaseDirectory, template);
+            string fileLocation = string.Format("{0}\\SampleForms\\{1}", AppDomain.CurrentDomain.BaseDirectory, templateLocation);
 
             Microsoft.Office.Interop.Word.Application wordApp = new Microsoft.Office.Interop.Word.Application();
             Microsoft.Office.Interop.Word.Document wordDoc = null;
@@ -51,7 +51,7 @@ namespace SaveToDoc
             }
 
             wordDoc.SaveAs2(
-                ref newFileName,
+                ref newFileNameWithLocation,
                 ref missing,
                 ref missing,
                 ref missing,
@@ -117,12 +117,12 @@ namespace SaveToDoc
         /// <summary>
         /// Combines multiple documents into one with page brake
         /// </summary>
-        /// <param name="fileNames"></param>
-        /// <param name="newFileName"></param>
-        public static void CombineFiles(List<string> fileNames, object newFileName)
+        /// <param name="fileNamesLocation"></param>
+        /// <param name="newFileNameWithLocation"></param>
+        public static void CombineFiles(List<string> fileNamesLocation, object newFileNameWithLocation)
         {
             object missing = Missing.Value;
-            string fileLocation = fileNames[0];
+            string fileLocation = fileNamesLocation[0];
 
             Microsoft.Office.Interop.Word.Application wordApp = new Microsoft.Office.Interop.Word.Application();
             Microsoft.Office.Interop.Word.Document wordDoc = null;
@@ -136,9 +136,9 @@ namespace SaveToDoc
 
             wordDoc.Activate();
 
-            for (int i = 1; i < fileNames.Count; i++)
+            for (int i = 1; i < fileNamesLocation.Count; i++)
             {
-                string copyFileLocation = fileNames[i];
+                string copyFileLocation = fileNamesLocation[i];
 
                 wordDocCopy = wordApp.Documents.Open(
                             copyFileLocation,
@@ -168,7 +168,7 @@ namespace SaveToDoc
             }
 
             wordDoc.SaveAs2(
-                ref newFileName,
+                ref newFileNameWithLocation,
                 ref missing,
                 ref missing,
                 ref missing,
