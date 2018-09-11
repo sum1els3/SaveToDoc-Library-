@@ -64,9 +64,9 @@ namespace SaveToDoc
                 ref missing
             );
 
-            wordDoc.Close(
-                ref missing,
-                ref missing,
+            wordApp.Quit(
+                ref missing, 
+                ref missing, 
                 ref missing
             );
         }
@@ -105,6 +105,81 @@ namespace SaveToDoc
                 ref _match_diactitics,
                 ref _match_alef_hamza,
                 ref _matchcontrol
+            );
+        }
+
+        public static void MergeFiles(List<string> studentNames, int grading, object new_file_name)
+        {
+            object missing = Missing.Value;
+            string fileLocation = string.Format("{0}\\Grading\\{1} - {2}.docx", Environment.GetFolderPath(Environment.SpecialFolder.Desktop), studentNames[0], grading);
+
+            Microsoft.Office.Interop.Word.Application wordApp = new Microsoft.Office.Interop.Word.Application();
+            Microsoft.Office.Interop.Word.Document wordDoc = null;
+            Microsoft.Office.Interop.Word.Document wordDocCopy = null;
+
+            object readOnly = false;
+            object isVisible = false;
+            wordApp.Visible = false;
+
+            wordDoc = wordApp.Documents.Add();
+
+            wordDoc.Activate();
+
+            for (int i = 1; i < studentNames.Count; i++)
+            {
+                string copyFileLocation = string.Format("{0}\\Grading\\{1} - {2}.docx", Environment.GetFolderPath(Environment.SpecialFolder.Desktop), studentNames[i], grading);
+
+                wordDocCopy = wordApp.Documents.Open(
+                            copyFileLocation,
+                            ref missing,
+                            ref readOnly,
+                            ref missing,
+                            ref missing,
+                            ref missing,
+                            ref missing,
+                            ref missing,
+                            ref missing,
+                            ref missing,
+                            ref missing,
+                            ref isVisible,
+                            ref missing,
+                            ref missing,
+                            ref missing
+                        );
+
+                Microsoft.Office.Interop.Word.Range range = wordDocCopy.Content;
+                range.Copy();
+
+                wordDoc.Range(wordDoc.Content.End - 1, wordDoc.Content.End - 1).Paste();
+                wordDoc.Range(wordDoc.Content.End - 1, wordDoc.Content.End - 1).InsertBreak(Microsoft.Office.Interop.Word.WdBreakType.wdPageBreak);
+
+                wordDocCopy.Close();
+            }
+
+            wordDoc.SaveAs2(
+                ref new_file_name,
+                ref missing,
+                ref missing,
+                ref missing,
+                ref missing,
+                ref missing,
+                ref missing,
+                ref missing,
+                ref missing,
+                ref missing,
+                ref missing,
+                ref missing,
+                ref missing,
+                ref missing,
+                ref missing,
+                ref missing,
+                ref missing
+            );
+
+            wordApp.Quit(
+                ref missing,
+                ref missing,
+                ref missing
             );
         }
     }
