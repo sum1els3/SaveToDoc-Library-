@@ -5,18 +5,18 @@ using System.Reflection;
 
 namespace SaveToDoc
 {
-    public class PrintReportCard
+    public class GenerateWordDocument
     {
         /// <summary>
-        /// Generates a word document from a given template
+        /// Generates a word doc from a given tamplate and replaces the tags with it's given value
         /// </summary>
-        /// <param name="file_name"></param>
-        /// <param name="new_file_name"></param>
+        /// <param name="template"></param>
+        /// <param name="newFileName"></param>
         /// <param name="tags"></param>
-        public static void GenerateReportCard(object file_name, object new_file_name, List<ReplaceTag> tags)
+        public static void GenerateWordDoc(object template, object newFileName, List<ReplaceTag> tags)
         {
             object missing = Missing.Value;
-            string fileLocation = string.Format("{0}\\SampleForms\\{1}", AppDomain.CurrentDomain.BaseDirectory, file_name);
+            string fileLocation = string.Format("{0}\\SampleForms\\{1}", AppDomain.CurrentDomain.BaseDirectory, template);
 
             Microsoft.Office.Interop.Word.Application wordApp = new Microsoft.Office.Interop.Word.Application();
             Microsoft.Office.Interop.Word.Document wordDoc = null;
@@ -51,7 +51,7 @@ namespace SaveToDoc
             }
 
             wordDoc.SaveAs2(
-                ref new_file_name,
+                ref newFileName,
                 ref missing,
                 ref missing,
                 ref missing,
@@ -115,15 +115,14 @@ namespace SaveToDoc
         }
 
         /// <summary>
-        /// Merges multiple documents into one
+        /// Combines multiple documents into one with page brake
         /// </summary>
-        /// <param name="studentNames"></param>
-        /// <param name="grading"></param>
-        /// <param name="new_file_name"></param>
-        public static void MergeFiles(List<string> studentNames, int grading, object new_file_name)
+        /// <param name="fileNames"></param>
+        /// <param name="newFileName"></param>
+        public static void CombineFiles(List<string> fileNames, object newFileName)
         {
             object missing = Missing.Value;
-            string fileLocation = string.Format("{0}\\Grading\\{1} - {2}.docx", Environment.GetFolderPath(Environment.SpecialFolder.Desktop), studentNames[0], grading);
+            string fileLocation = fileNames[0];
 
             Microsoft.Office.Interop.Word.Application wordApp = new Microsoft.Office.Interop.Word.Application();
             Microsoft.Office.Interop.Word.Document wordDoc = null;
@@ -137,9 +136,9 @@ namespace SaveToDoc
 
             wordDoc.Activate();
 
-            for (int i = 1; i < studentNames.Count; i++)
+            for (int i = 1; i < fileNames.Count; i++)
             {
-                string copyFileLocation = string.Format("{0}\\Grading\\{1} - {2}.docx", Environment.GetFolderPath(Environment.SpecialFolder.Desktop), studentNames[i], grading);
+                string copyFileLocation = fileNames[i];
 
                 wordDocCopy = wordApp.Documents.Open(
                             copyFileLocation,
@@ -169,7 +168,7 @@ namespace SaveToDoc
             }
 
             wordDoc.SaveAs2(
-                ref new_file_name,
+                ref newFileName,
                 ref missing,
                 ref missing,
                 ref missing,
