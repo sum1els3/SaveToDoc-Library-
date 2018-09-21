@@ -136,7 +136,7 @@ namespace SaveToDoc
 
             wordDoc.Activate();
 
-            for (int i = 1; i < fileNamesLocation.Count; i++)
+            for (int i = 0; i < fileNamesLocation.Count; i++)
             {
                 string copyFileLocation = fileNamesLocation[i];
 
