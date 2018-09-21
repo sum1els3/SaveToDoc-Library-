@@ -16,7 +16,6 @@ namespace SaveToDoc
         public static void GenerateWordDoc(object templateLocation, object newFileNameWithLocation, List<ReplaceTag> tags)
         {
             object missing = Missing.Value;
-            string fileLocation = string.Format("{0}\\SampleForms\\{1}", AppDomain.CurrentDomain.BaseDirectory, templateLocation);
 
             Microsoft.Office.Interop.Word.Application wordApp = new Microsoft.Office.Interop.Word.Application();
             Microsoft.Office.Interop.Word.Document wordDoc = null;
@@ -26,7 +25,7 @@ namespace SaveToDoc
             wordApp.Visible = false;
 
             wordDoc = wordApp.Documents.Open(
-                        fileLocation,
+                        templateLocation,
                         ref missing,
                         ref readOnly,
                         ref missing,
