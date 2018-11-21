@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Office.Interop.Word;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -7,27 +8,32 @@ namespace SaveToDoc
 {
     public class GenerateWordDocument
     {
+        public static object ReadOnly = false;
+        public static object Convert = false;
+        public static object IsVisible = false;
+        public static object FileFormat = WdSaveFormat.wdFormatPDF;
+        public static object SaveChangesToTemplate = false;
+
         /// <summary>
         /// Generates a word doc from a given tamplate and replaces the tags with it's given value
         /// </summary>
         /// <param name="templateLocation"></param>
         /// <param name="newFileNameWithLocation"></param>
         /// <param name="tags"></param>
-        public static void GenerateWordDoc(object templateLocation, object newFileNameWithLocation, List<ReplaceTag> tags)
+        public static void GenerateWordDoc(object templateLocation, object newFileNameWithLocation, List<ReplaceTag> tags, bool readOnly)
         {
             object missing = Missing.Value;
+            object readOnlySave = readOnly;
 
             Microsoft.Office.Interop.Word.Application wordApp = new Microsoft.Office.Interop.Word.Application();
             Microsoft.Office.Interop.Word.Document wordDoc = null;
 
-            object readOnly = false;
-            object isVisible = false;
-            wordApp.Visible = false;
+            wordApp.Visible = (bool)IsVisible;
 
             wordDoc = wordApp.Documents.Open(
                         templateLocation,
                         ref missing,
-                        ref readOnly,
+                        ref ReadOnly,
                         ref missing,
                         ref missing,
                         ref missing,
@@ -36,7 +42,7 @@ namespace SaveToDoc
                         ref missing,
                         ref missing,
                         ref missing,
-                        ref isVisible,
+                        ref IsVisible,
                         ref missing,
                         ref missing,
                         ref missing
@@ -56,7 +62,7 @@ namespace SaveToDoc
                 ref missing,
                 ref missing,
                 ref missing,
-                ref missing,
+                ref readOnlySave,
                 ref missing,
                 ref missing,
                 ref missing,
@@ -70,8 +76,8 @@ namespace SaveToDoc
             );
 
             wordApp.Quit(
-                ref missing, 
-                ref missing, 
+                ref SaveChangesToTemplate,
+                ref missing,
                 ref missing
             );
         }
@@ -118,18 +124,17 @@ namespace SaveToDoc
         /// </summary>
         /// <param name="fileNamesLocation"></param>
         /// <param name="newFileNameWithLocation"></param>
-        public static void CombineFiles(List<string> fileNamesLocation, object newFileNameWithLocation)
+        public static void CombineFiles(List<string> fileNamesLocation, object newFileNameWithLocation, bool readOnly)
         {
             object missing = Missing.Value;
             string fileLocation = fileNamesLocation[0];
+            object readOnlySave = readOnly;
 
             Microsoft.Office.Interop.Word.Application wordApp = new Microsoft.Office.Interop.Word.Application();
             Microsoft.Office.Interop.Word.Document wordDoc = null;
             Microsoft.Office.Interop.Word.Document wordDocCopy = null;
-
-            object readOnly = false;
-            object isVisible = false;
-            wordApp.Visible = false;
+            
+            wordApp.Visible = (bool)IsVisible;
 
             wordDoc = wordApp.Documents.Add();
 
@@ -141,17 +146,17 @@ namespace SaveToDoc
 
                 wordDocCopy = wordApp.Documents.Open(
                             copyFileLocation,
-                            ref missing,
-                            ref readOnly,
-                            ref missing,
-                            ref missing,
+                            ref Convert,
+                            ref readOnlySave,
                             ref missing,
                             ref missing,
                             ref missing,
                             ref missing,
                             ref missing,
                             ref missing,
-                            ref isVisible,
+                            ref missing,
+                            ref missing,
+                            ref IsVisible,
                             ref missing,
                             ref missing,
                             ref missing
@@ -160,20 +165,20 @@ namespace SaveToDoc
                 Microsoft.Office.Interop.Word.Range range = wordDocCopy.Content;
                 range.Copy();
 
-                wordDoc.Range(wordDoc.Content.End - 1, wordDoc.Content.End - 1).Paste();
-                wordDoc.Range(wordDoc.Content.End - 1, wordDoc.Content.End - 1).InsertBreak(Microsoft.Office.Interop.Word.WdBreakType.wdPageBreak);
+                wordDoc.Range(wordDoc.Content.End - 1).Paste();
+                wordDoc.Range(wordDoc.Content.End - 1).InsertBreak(Microsoft.Office.Interop.Word.WdBreakType.wdPageBreak);
 
                 wordDocCopy.Close();
             }
 
             wordDoc.SaveAs2(
                 ref newFileNameWithLocation,
+                ref FileFormat,
                 ref missing,
                 ref missing,
                 ref missing,
                 ref missing,
-                ref missing,
-                ref missing,
+                ref readOnlySave,
                 ref missing,
                 ref missing,
                 ref missing,
@@ -187,7 +192,7 @@ namespace SaveToDoc
             );
 
             wordApp.Quit(
-                ref missing,
+                ref SaveChangesToTemplate,
                 ref missing,
                 ref missing
             );
